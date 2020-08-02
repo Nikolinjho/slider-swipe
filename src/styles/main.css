@@ -97,6 +97,7 @@ a{
     &-row{
         display: flex;
         transition: all .2s ease-out 0s;
+        touch-action: none;
     }
 }
 
