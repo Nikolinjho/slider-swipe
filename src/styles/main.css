@@ -41,9 +41,6 @@ a{
 }
 
 
-
-
-
 .wrap{
     display: grid;
 
@@ -100,21 +97,20 @@ a{
     &-row{
         display: flex;
         transition: all .2s ease-out 0s;
-        will-change: transform;
-        touch-action: none;
     }
 }
 
 .column{
-    width: 200px;
     min-width: 200px;
     display: flex;
     flex-direction: column;
     padding-right: 20px;
-    cursor: all-scroll;
+    cursor: pointer;
+
     &:not(:last-child){
     }
     &-image{
+        width: 200px;
         height: 200px;
 
         img{
