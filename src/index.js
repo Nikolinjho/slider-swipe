@@ -1,6 +1,5 @@
 import '@/styles/main.css';
 
-
 document.addEventListener('DOMContentLoaded', () => {
     class SliderCarousel {
         constructor({ main, wrapper, prev, next }) {
@@ -34,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.mousedownHandler = this.movingStart.bind(this);
             this.mousemoveHandler = this.moving.bind(this);
             this.mouseupHandler = this.movingEnd.bind(this);
+            this.mouseleaveHandler = this.leaveSurface.bind(this);
 
             if (window.PointerEvent) {
                 this.main.addEventListener('pointerdown', this.mousedownHandler);
@@ -44,61 +44,60 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         movingStart(e) {
-            console.log(e);
             this.initPos = e.pageX;
+
             const style = window.getComputedStyle(this.wrapper);
             this.transformMtrx = new WebKitCSSMatrix(style.webkitTransform).m41;
 
             if (window.PointerEvent) {
                 this.main.addEventListener('pointermove', this.mousemoveHandler);
                 this.main.addEventListener('pointerup', this.mouseupHandler);
+                this.main.addEventListener('pointerleave', this.mouseleaveHandler);
             } else {
                 this.main.addEventListener('mousemove', this.mousemoveHandler);
                 this.main.addEventListener('mouseup', this.mouseupHandler);
                 this.main.addEventListener('touchmove', this.mousemoveHandler);
                 this.main.addEventListener('touchend', this.mouseupHandler);
+                this.main.addEventListener('mouseleave', this.mouseleaveHandler);
             }
         }
 
         moving(e) {
             e.preventDefault();
-
             this.currentPos = e.pageX;
             this.diffPos = this.currentPos - this.initPos;
             this.wrapper.style.transform = `translateX(${this.transformMtrx + this.diffPos}px)`;
         }
         movingEnd(e) {
-            console.log(e.pageX, this.initPos);
-            if (e.pageX > this.initPos) {
-                if (this.options.position > 0) {
-                    this.options.position -= Math.abs(Math.round(this.diffPos / this.options.slideWidth));
-                    this.distance = Math.round(this.diffPos / this.options.slideWidth) * this.options.slideWidth;
-                    this.wrapper.style.transform = `translateX(${this.transformMtrx + this.distance}px)`;
-                } else {
-                    this.wrapper.style.transform = `translateX(${0}px)`;
-                }
-            } else {
-                if (e.pageX < this.initPos) {
-                    if (this.options.position < this.sliders.length - this.sliderToShow) {
-                        this.options.position += Math.abs(Math.round(this.diffPos / this.options.slideWidth));
-                        this.distance = Math.round(this.diffPos / this.options.slideWidth) * this.options.slideWidth;
-                        this.wrapper.style.transform = `translateX(${this.transformMtrx + this.distance}px)`;
-                    } else {
-                        this.wrapper.style.transform = `translateX(-${this.options.slideWidth * (this.sliders.length - this.sliderToShow)}px)`;
-                    }
-                }
-            }
+            this.swipeControl();
 
             if (window.PointerEvent) {
                 this.main.removeEventListener('pointermove', this.mousemoveHandler);
                 this.main.removeEventListener('pointerup', this.mouseupHandler);
+                this.main.removeEventListener('pointerleave', this.mouseleaveHandler);
             } else {
                 this.main.removeEventListener('mousemove', this.mousemoveHandler);
                 this.main.removeEventListener('mouseup', this.mouseupHandler);
+                this.main.removeEventListener('mouseleave', this.mouseleaveHandler);
                 this.main.removeEventListener('touchmove', this.mousemoveHandler);
                 this.main.removeEventListener('touchend', this.mouseupHandler);
             }
             console.log('end');
+        }
+
+        leaveSurface() {
+            this.swipeControl();
+            if (window.PointerEvent) {
+                this.main.removeEventListener('pointermove', this.mousemoveHandler);
+                this.main.removeEventListener('pointerup', this.mouseupHandler);
+                this.main.removeEventListener('pointerleave', this.mouseleaveHandler);
+            } else {
+                this.main.removeEventListener('mousemove', this.mousemoveHandler);
+                this.main.removeEventListener('mouseup', this.mouseupHandler);
+                this.main.removeEventListener('mouseleave', this.mouseleaveHandler);
+                this.main.removeEventListener('touchmove', this.mousemoveHandler);
+                this.main.removeEventListener('touchend', this.mouseupHandler);
+            }
         }
 
         prevSlider() {
@@ -122,6 +121,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth}px)`;
                 }, 250);
+            }
+        }
+
+        swipeControl() {
+            if (this.currentPos > this.initPos) {
+                if (this.options.position > 0) {
+                    this.options.position -= Math.abs(Math.round(this.diffPos / this.options.slideWidth));
+                    this.distance = Math.round(this.diffPos / this.options.slideWidth) * this.options.slideWidth;
+                    this.wrapper.style.transform = `translateX(${this.transformMtrx + this.distance}px)`;
+                } else {
+                    this.wrapper.style.transform = `translateX(${0}px)`;
+                }
+            } else {
+                if (this.currentPos < this.initPos) {
+                    if (this.options.position < this.sliders.length - this.sliderToShow) {
+                        this.options.position += Math.abs(Math.round(this.diffPos / this.options.slideWidth));
+                        this.distance = Math.round(this.diffPos / this.options.slideWidth) * this.options.slideWidth;
+                        this.wrapper.style.transform = `translateX(${this.transformMtrx + this.distance}px)`;
+                    } else {
+                        this.wrapper.style.transform = `translateX(-${this.options.slideWidth * (this.sliders.length - this.sliderToShow)}px)`;
+                    }
+                }
             }
         }
     }
