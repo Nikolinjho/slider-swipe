@@ -1,32 +1,31 @@
-
 @import "./lib/reset.css";
-
-
 /* vars */
+
 @import './bem-blocks/variables.css';
-
 /* mixin'ы */
-@import "./bem-blocks/mixins.css";
 
-/* main code */ 
+@import "./bem-blocks/mixins.css";
+/* main code */
+
 /* @import "./bem-blocks/header.css" ; */
+
 /* @import "./bem-blocks/bem-content.css" ; */
+
 /* @import "./bem-blocks/footer.css" ; */
+
 /* links, btns */
+
 /* @import "./bem-blocks/bem-btn.css" ; */
 
+* {
+    box-sizing: border-box;
+}
 
-  
-*{
- box-sizing: border-box; 
-  
-}       
-
-html, body{
+html, body {
     height: 100%;
 }
 
-body{
+body {
     padding: 0px;
     margin: 0;
     font-family: $font;
@@ -36,102 +35,99 @@ body{
     text-rendering: optimizeSpeed;
 }
 
-a{
+a {
     text-decoration: none;
 }
 
-
-.wrap{
+.wrap {
     display: grid;
-
-    &__item{
-        
-    }
+    &__item {}
 }
 
-
-.grid{
+.block {
     display: flex;
     /* white-space: nowrap; */
-    
     width: 1100px;
     margin: 0 auto;
     overflow: hidden;
     position: relative;
-    button{
+    button {
         position: absolute;
         cursor: pointer;
         z-index: 2;
     }
-    .left{
+    .left {
         left: 30px;
         top: 60px;
         /* display: none; */
     }
-    .right{
+    .right {
         right: 30px;
         top: 60px;
     }
-    &:after{
+}
+
+.grid {
+    display: flex;
+    /* white-space: nowrap; */
+    width: 1100px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    &:after {
         content: "";
         display: block;
         position: absolute;
-        background: linear-gradient(90deg,hsla(0,0%,100%,0),#fff);
+        background: linear-gradient(90deg, hsla(0, 0%, 100%, 0), #fff);
         right: 0;
         top: 0;
         width: 25px;
         height: 100%;
         z-index: 1;
     }
-    &:before{
+    &:before {
         content: "";
         display: block;
         position: absolute;
-        background: linear-gradient(270deg,hsla(0,0%,100%,0),#fff);
+        background: linear-gradient(270deg, hsla(0, 0%, 100%, 0), #fff);
         left: 0;
         top: 0;
         width: 25px;
         height: 100%;
         z-index: 1;
     }
-    &-row{
+    &-row {
         display: flex;
         transition: all .2s ease-out 0s;
         touch-action: none;
     }
 }
 
-.column{
+.column {
     min-width: 200px;
     display: flex;
     flex-direction: column;
     padding-right: 20px;
     cursor: pointer;
     user-select: none;
-
-    &:not(:last-child){
-    }
-    &-image{
+    &:not(:last-child) {}
+    &-image {
         width: 200px;
         height: 200px;
-
-        img{
+        img {
             max-width: 100%;
             max-height: 100%;
         }
     }
-
-    &-title{
+    &-title {
         font-size: 22px;
         margin-top: 15px
     }
-
-    &-descr{
+    &-descr {
         width: 100%;
         margin-top: 15px
     }
-
-    &-price{
+    &-price {
         font-size: 24px;
         margin-top: 15px;
     }
