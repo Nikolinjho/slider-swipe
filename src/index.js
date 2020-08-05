@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.mousedownHandler = this.movingStart.bind(this);
             this.mousemoveHandler = this.moving.bind(this);
             this.mouseupHandler = this.movingEnd.bind(this);
+            this.mouseleaveHandler = this.leaveSurface.bind(this);
 
             if (window.PointerEvent) {
                 this.main.addEventListener('pointerdown', this.mousedownHandler);
@@ -51,9 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (window.PointerEvent) {
                 this.main.addEventListener('pointermove', this.mousemoveHandler);
                 this.main.addEventListener('pointerup', this.mouseupHandler);
+                this.main.addEventListener('pointerleave', this.mouseupHandler);
             } else {
                 this.main.addEventListener('mousemove', this.mousemoveHandler);
                 this.main.addEventListener('mouseup', this.mouseupHandler);
+                this.main.addEventListener('mouseleave', this.mouseupHandler);
                 this.main.addEventListener('touchmove', this.mousemoveHandler);
                 this.main.addEventListener('touchend', this.mouseupHandler);
             }
@@ -66,6 +69,39 @@ document.addEventListener('DOMContentLoaded', () => {
             this.wrapper.style.transform = `translateX(${this.transformMtrx + this.diffPos}px)`;
         }
         movingEnd(e) {
+            this.moveEndControl();
+        }
+
+        leaveSurface() {
+            this.moveEndControl();
+        }
+
+        prevSlider() {
+            if (this.options.position > 0) {
+                this.options.position--;
+                this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth}px)`;
+            } else {
+                this.wrapper.style.transform = `translateX(${60}px)`;
+                setTimeout(() => {
+                    this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth}px)`;
+                }, 250);
+            }
+        }
+
+        nextSlider() {
+            if (this.options.position < this.sliders.length - this.sliderToShow) {
+                this.options.position++;
+                this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth}px)`;
+            } else {
+                this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth + 60}px)`;
+                setTimeout(() => {
+                    this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth}px)`;
+                }, 250);
+            }
+            console.log('next', this.currentPos, this.options.position);
+        }
+
+        moveEndControl() {
             this.currentPos = Math.abs(Math.round(this.diffPos / this.options.slideWidth));
             console.log('start', this.currentPos, this.options.position);
 
@@ -96,69 +132,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (window.PointerEvent) {
                 this.main.removeEventListener('pointermove', this.mousemoveHandler);
                 this.main.removeEventListener('pointerup', this.mouseupHandler);
+                // this.main.removeEventListener('pointerleave', this.mouseupHandler);
             } else {
                 this.main.removeEventListener('mousemove', this.mousemoveHandler);
                 this.main.removeEventListener('mouseup', this.mouseupHandler);
+                // this.main.removeEventListener('mouseleave', this.mouseupHandler);
                 this.main.removeEventListener('touchmove', this.mousemoveHandler);
                 this.main.removeEventListener('touchend', this.mouseupHandler);
-            }
-        }
-
-        leaveSurface(){
-
-        }
-
-        prevSlider() {
-            if (this.options.position > 0) {
-                this.options.position--;
-                this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth}px)`;
-            } else {
-                this.wrapper.style.transform = `translateX(${60}px)`;
-                setTimeout(() => {
-                    this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth}px)`;
-                }, 250);
-            }
-        }
-
-        nextSlider() {
-            if (this.options.position < this.sliders.length - this.sliderToShow) {
-                this.options.position++;
-                this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth}px)`;
-            } else {
-                this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth + 60}px)`;
-                setTimeout(() => {
-                    this.wrapper.style.transform = `translateX(-${this.options.position * this.options.slideWidth}px)`;
-                }, 250);
-            }
-            console.log('next', this.currentPos, this.options.position);
-        }
-
-        moveEndControl(){
-            this.currentPos = Math.abs(Math.round(this.diffPos / this.options.slideWidth));
-            console.log('start', this.currentPos, this.options.position);
-
-            if (this.currentX > this.initPos) {
-                this.options.position -= this.currentPos;
-                if (this.options.position > 0) {
-                    console.log('prev', this.currentPos, this.options.position);
-                    this.distance = Math.round(this.diffPos / this.options.slideWidth) * this.options.slideWidth;
-                    this.wrapper.style.transform = `translateX(${this.transformMtrx + this.distance}px)`;
-                } else {
-                    this.options.position = 0;
-                    this.wrapper.style.transform = `translateX(${0}px)`;
-                }
-            } else {
-                if (this.currentX < this.initPos) {
-                    this.options.position += this.currentPos;
-                    if (this.options.position < this.sliders.length - this.sliderToShow) {
-                        console.log('next', this.currentPos, this.options.position);
-                        this.distance = Math.round(this.diffPos / this.options.slideWidth) * this.options.slideWidth;
-                        this.wrapper.style.transform = `translateX(${this.transformMtrx + this.distance}px)`;
-                    } else {
-                        this.options.position = this.sliders.length - this.sliderToShow;
-                        this.wrapper.style.transform = `translateX(-${this.options.slideWidth * (this.sliders.length - this.sliderToShow)}px)`;
-                    }
-                }
             }
         }
     }
