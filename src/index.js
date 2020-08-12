@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         movingStart(e) {
+            e.stopPropagation();
+
             this.initPos = e.pageX;
             const style = window.getComputedStyle(this.wrapper);
             this.transformMtrx = new WebKitCSSMatrix(style.webkitTransform).m41;
@@ -64,6 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         moving(e) {
             e.preventDefault();
+            e.stopPropagation();
+            
             this.currentX = e.pageX;
             this.diffPos = this.currentX - this.initPos;
             this.wrapper.style.transform = `translateX(${this.transformMtrx + this.diffPos}px)`;
@@ -105,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.currentPos = Math.abs(Math.round(this.diffPos / this.options.slideWidth));
             console.log('start', this.currentPos, this.options.position);
 
-            if (this.currentX > this.initPos) {
+            if (this.currentX > this.initPos && this.currentX) {
                 this.options.position -= this.currentPos;
                 if (this.options.position > 0) {
                     console.log('prev', this.currentPos, this.options.position);
@@ -116,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     this.wrapper.style.transform = `translateX(${0}px)`;
                 }
             } else {
-                if (this.currentX < this.initPos) {
+                if (this.currentX < this.initPos && this.currentX) {
                     this.options.position += this.currentPos;
                     if (this.options.position < this.sliders.length - this.sliderToShow) {
                         console.log('next', this.currentPos, this.options.position);
@@ -150,3 +154,4 @@ document.addEventListener('DOMContentLoaded', () => {
         next: '.right',
     });
 });
+ 
